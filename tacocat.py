@@ -3,7 +3,6 @@ import json
 
 import forms
 import models
-import passwords
 
 DEBUG = True
 PORT = 8000

@@ -1,7 +1,8 @@
 from flask_bcrypt import generate_password_hash
 from peewee import *
 
-DATABASE = SqliteDatabase(':memory:')
+# DATABASE = SqliteDatabase(':memory:')
+DATABASE = SqliteDatabase('FavoriteOrders.db')
 
 
 class BaseModel(Model):
