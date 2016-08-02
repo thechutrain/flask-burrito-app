@@ -29,6 +29,7 @@ class Taco(BaseModel):
     protein = CharField() # chicken, beef
     shell = CharField() # hard or soft
     chesse = BooleanField(default=False)
+    email = ForeignKeyField(User, related_name="eats")
 
 def initialize():
     DATABASE.connect()
