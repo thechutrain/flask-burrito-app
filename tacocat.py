@@ -1,7 +1,7 @@
-from flask import (Flask, render_template, redirect, url_for, flash)
+from flask import (Flask, render_template, redirect, url_for, flash, g)
 import json
-# from flask_login import (LoginManager, login_user, logout_user,
-#                              login_required, current_user)
+from flask_login import (LoginManager, login_user, logout_user,
+                             login_required, current_user)
 
 import forms
 import models # where bcrypt is imported
@@ -18,13 +18,37 @@ with open('config.json', 'r') as f:
     config = json.load(f)
 app.secret_key = config['flask_app_key']
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@app.before_request
+def before_request():
+    """Connect to the database before each request."""
+    g.db = models.DATABASE
+    g.db.connect()
+    g.user = current_user
+
+@app.after_request
+def after_request(response):
+    """Close the database connection after each request."""
+    g.db.close()
+    return response
+
+@login_manager.user_loader
+def load_user(userid):
+    try:
+        return models.User.get(models.User.id == userid)
+    except models.DoesNotExist:
+        return None
 
 ############### App Pages with Routes ###############
 ############### Home page
 @app.route("/")
 def index():
-    return "Index page"
+    # return "Index page"
     # return render_template("index.html", tacos=taco)
+    return render_template("layout.html")
 
 ############### Sign UP
 @app.route("/register", methods=("POST", "GET"))
@@ -48,20 +72,25 @@ def login():
             user = models.User.get(models.User.email == form.email.data)
         except models.DoesNotExist:
             flash("Your email or password doesn't match!", "error")
-            # print("Error")
         else:
             if models.check_password_hash(user.password, form.password.data):
-                flash("You have been successfully signed in!", "success")
-                # print("Success")
+                login_user(user)
+                # flash("You have been successfully signed in!", "success")
+                flash("Welcome back, {}. You've been successfully signed in.".format(current_user.email),
+                "success")
                 return redirect(url_for("index"))
             else:
                 flash("Your email or password doesn't match!", "error")
-                # print("Error")
+    return render_template("login.html", form=form)
 
-
-
-    return render_template("login.html", form = form)
-
+############### Sign OUT
+@app.route('/logout')
+@login_required
+def logout():
+    # flash("Until next time! Take care, {}".format(current_user.email), "success")
+    flash("You've been logged out! Come back soon!", "success")
+    logout_user()
+    return redirect(url_for('index'))
 
 ############### Running Applicaiton ###############
 if __name__ == '__main__':

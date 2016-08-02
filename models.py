@@ -1,4 +1,5 @@
 from flask_bcrypt import (generate_password_hash, check_password_hash)
+from flask_login import UserMixin
 from peewee import *
 
 # DATABASE = SqliteDatabase(':memory:')
@@ -10,7 +11,7 @@ class BaseModel(Model):
         database = DATABASE
 
 
-class User(BaseModel):
+class User(UserMixin, BaseModel):
     email = CharField(unique=True)
     password = CharField(max_length=100)
 
