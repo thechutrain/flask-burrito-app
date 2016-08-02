@@ -22,18 +22,18 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-@app.before_request
-def before_request():
-    """Connect to the database before each request."""
-    g.db = models.DATABASE
-    g.db.connect()
-    g.user = current_user
-
-@app.after_request
-def after_request(response):
-    """Close the database connection after each request."""
-    g.db.close()
-    return response
+# @app.before_request
+# def before_request():
+#     """Connect to the database before each request."""
+#     g.db = models.DATABASE
+#     g.db.connect()
+#     g.user = current_user
+#
+# @app.after_request
+# def after_request(response):
+#     """Close the database connection after each request."""
+#     g.db.close()
+#     return response
 
 @login_manager.user_loader
 def load_user(userid):
@@ -47,8 +47,9 @@ def load_user(userid):
 @app.route("/")
 def index():
     # return "Index page"
-    # return render_template("index.html", tacos=taco)
-    return render_template("layout.html")
+    burritos = models.Burrito.select()
+    return render_template("index.html", burritos=burritos)
+    # return render_template("layout.html")
 
 ############### Sign UP
 @app.route("/register", methods=("POST", "GET"))
@@ -66,6 +67,8 @@ def register():
 ############### Sign IN
 @app.route("/login", methods=("POST", "GET"))
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("burrito"))
     form = forms.Login()
     if form.validate_on_submit():
         try:
@@ -91,6 +94,14 @@ def logout():
     flash("You've been logged out! Come back soon!", "success")
     logout_user()
     return redirect(url_for('index'))
+
+############### burrito
+@app.route("/burrito", methods=("GET", "POST"))
+@login_required
+def burrito():
+    form = forms.Burrito()
+    # return render_template("layout.html")
+    return render_template("burrito.html", form=form)
 
 ############### Running Applicaiton ###############
 if __name__ == '__main__':
