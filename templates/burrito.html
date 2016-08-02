@@ -3,8 +3,14 @@
 {% from 'macros.html' import render_field %}
 
 {% block content %}
+
+{% for field_name, field_errors in form.errors.items() %}
+<p>{{ field_name }}
+  <ul>{% for error in field_errors %}
+    <li>{{ error }}</li>{% endfor %}</ul>{% endfor %}</p>
+
 <div class="">
-  <h2>Make Your Taco!</h2>
+  <h2>Make Your Burrito!</h2>
 </div>
 
 <form method='POST' action=''>
@@ -14,12 +20,26 @@
       {{ render_field(form.protein) }}
     </div>
     <div class="six columns">
-      {{ render_field(form.shell) }}
+      {{ render_field(form.rice) }}
     </div>
   </div>
   <div class="row">
     <div class="six columns">
+      {{ render_field(form.salsa) }}
+    </div>
+    <div class="six columns">
+      {{ render_field(form.bean)}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="two columns">
       {{ render_field(form.cheese) }}
+    </div>
+    <div class="two columns">
+      {{ render_field(form.sour_cream) }}
+    </div>
+    <div class="two columns">
+      {{ render_field(form.lettuce) }}
     </div>
     <div class="six columns">
       {{ render_field(form.extras) }}

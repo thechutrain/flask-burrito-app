@@ -1,8 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>Tacos</h2>
-    {% if tacos.count() %}
+<h2>Burritos</h2>
+<p> Make your delicious <a href="{{url_for('burrito')}}">burrito</a> today!
+</p>
+
+    {% if burritos.count() %}
         <table class="u-full-width">
           <thead>
             <tr>
@@ -13,7 +16,7 @@
             </tr>
           </thead>
           <tbody>
-        {% for taco in tacos %}
+        {% for burito in burritos %}
             <tr>
               <!-- taco attributes here -->
             </tr>

@@ -1,4 +1,5 @@
-from flask import (Flask, render_template, redirect, url_for, flash, g)
+from flask import (Flask, render_template, redirect,
+                    url_for, flash, g, request)
 import json
 from flask_login import (LoginManager, login_user, logout_user,
                              login_required, current_user)
@@ -47,7 +48,7 @@ def load_user(userid):
 @app.route("/")
 def index():
     # return "Index page"
-    burritos = models.Burrito.select()
+    burritos = models.Burrito.select().limit(5)
     return render_template("index.html", burritos=burritos)
     # return render_template("layout.html")
 
@@ -100,7 +101,19 @@ def logout():
 @login_required
 def burrito():
     form = forms.Burrito()
-    # return render_template("layout.html")
+    if form.validate_on_submit():
+        models.Burrito.create(
+            protein = form.protein.data,
+            rice = form.rice.data,
+            bean = form.rice.data,
+            salsa = form.salsa.data,
+            sour_cream = form.sour_cream.data,
+            cheese = form.cheese.data,
+            lettuce = form.lettuce.data,
+            extras = form.extras.data
+        )
+        flash("Saved your burrito!", "success")
+        return redirect(url_for("index"))
     return render_template("burrito.html", form=form)
 
 ############### Running Applicaiton ###############

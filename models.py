@@ -1,6 +1,7 @@
 from flask_bcrypt import (generate_password_hash, check_password_hash)
 from flask_login import UserMixin
 from peewee import *
+from wtforms.fields import TextAreaField
 
 # DATABASE = SqliteDatabase(':memory:')
 DATABASE = SqliteDatabase('FavoriteOrders.db')
@@ -26,13 +27,19 @@ class User(UserMixin, BaseModel):
             pass
 
 
-class Taco(BaseModel):
-    protein = CharField() # chicken, beef
-    shell = CharField() # hard or soft
+class Burrito(BaseModel):
+    protein = CharField(default="None") # chicken, beef
+    rice = CharField(default="None") # brown, white, none
+    bean = CharField(default="None") # black, pinto
+    salsa = CharField(default="None")
     chesse = BooleanField(default=False)
-    email = ForeignKeyField(User, related_name="eats")
+    sour_cream = BooleanField(default=False)
+    lettuce = BooleanField(default=False)
+    extras = TextAreaField(default="")
+
+    # email = ForeignKeyField(User, related_name="eats")
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Taco], safe=True)
+    DATABASE.create_tables([User, Burrito], safe=True)
     DATABASE.close()
