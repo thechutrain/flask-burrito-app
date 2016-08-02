@@ -17,14 +17,12 @@ class SignUp(Form):
         DataRequired(),
         Email()
         ])
-
     password = PasswordField(
     'Password', validators=[
     DataRequired(),
     EqualTo('password2', message="Passwords much match."),
     Length(min=5)
     ])
-
     password2 = PasswordField('Password2', validators=[])
 
 

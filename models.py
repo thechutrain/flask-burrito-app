@@ -24,7 +24,7 @@ class User(UserMixin, BaseModel):
             password=generate_password_hash(password)
             )
         except:
-            pass
+            print "exception error"
 
 
 class Burrito(BaseModel):
