@@ -23,18 +23,18 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# @app.before_request
-# def before_request():
-#     """Connect to the database before each request."""
-#     g.db = models.DATABASE
-#     g.db.connect()
-#     g.user = current_user
-#
-# @app.after_request
-# def after_request(response):
-#     """Close the database connection after each request."""
-#     g.db.close()
-#     return response
+@app.before_request
+def before_request():
+    """Connect to the database before each request."""
+    g.db = models.DATABASE
+    g.db.connect()
+    g.user = current_user
+
+@app.after_request
+def after_request(response):
+    """Close the database connection after each request."""
+    g.db.close()
+    return response
 
 @login_manager.user_loader
 def load_user(userid):
@@ -110,7 +110,9 @@ def burrito():
             sour_cream = form.sour_cream.data,
             cheese = form.cheese.data,
             lettuce = form.lettuce.data,
-            extras = form.extras.data
+            extras = form.extras.data,
+            # email = g.user._get_current_object().email,
+            user = g.user._get_current_object()
         )
         flash("Saved your burrito!", "success")
         return redirect(url_for("index"))

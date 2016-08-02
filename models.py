@@ -36,7 +36,8 @@ class Burrito(BaseModel):
     sour_cream = BooleanField(default=False)
     lettuce = BooleanField(default=False)
     extras = TextAreaField(default="")
-
+    # email = CharField()
+    user = ForeignKeyField(User, related_name="eats")
     # email = ForeignKeyField(User, related_name="eats")
 
 def initialize():
