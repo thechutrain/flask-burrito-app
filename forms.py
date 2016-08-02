@@ -18,3 +18,15 @@ class SignUp(Form):
     ])
 
     password2 = PasswordField('Password2', validators=[])
+
+
+class Login(Form):
+    email = StringField(
+        'Email', validators=[
+        DataRequired(),
+        Email()
+        ])
+    password = PasswordField(
+        'Password', validators=[
+        DataRequired()
+        ])
